@@ -60,6 +60,13 @@ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
   process.exit(1);
 }
 
+if (!process.env.appName) {
+  console.log(chalk.red('You must specify a Django App Name'));
+  process.exit(1);
+} else {
+  console.log(`\nBuilding "${process.env.appName}" Django/React app`);
+}
+
 // Process CLI arguments
 const argv = process.argv.slice(2);
 const writeStatsJson = argv.indexOf('--stats') !== -1;
