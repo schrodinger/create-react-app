@@ -62,6 +62,7 @@ const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
+const lessRegex = /\.less$/;
 
 // common function to get style loaders
 const getStyleLoaders = (cssOptions, preProcessor) => {
@@ -273,7 +274,7 @@ module.exports = {
                 settings: { react: { version: '999.999.999' } },
               },
               ignore: false,
-              useEslintrc: false,
+              useEslintrc: true,
               // @remove-on-eject-end
             },
             loader: require.resolve('eslint-loader'),
@@ -439,6 +440,10 @@ module.exports = {
               'sass-loader'
             ),
           },
+          {
+            test: lessRegex,
+            use: getStyleLoaders({ importLoaders: 2 }, 'less-loader'),
+          },
           // "file" loader makes sure assets end up in the `build` folder.
           // When you `import` an asset, you get its filename.
           // This loader doesn't use a "test" so it will catch all modules
@@ -465,6 +470,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       inject: true,
       template: paths.appHtml,
+      filename: `${process.env.appName}.html`,
       minify: {
         removeComments: true,
         collapseWhitespace: true,
@@ -473,7 +479,7 @@ module.exports = {
         removeEmptyAttributes: true,
         removeStyleLinkTypeAttributes: true,
         keepClosingSlash: true,
-        minifyJS: true,
+        minifyJS: false, // Do not minify JS b/c it contains Django template vars
         minifyCSS: true,
         minifyURLs: true,
       },
