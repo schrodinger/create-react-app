@@ -1,5 +1,5 @@
 {
-  "name": "react-scripts",
+  "name": "@schrodinger/react-scripts",
   "version": "2.0.5",
   "description": "Fork of Create React App with custom react-scripts.",
   "repository": "schrodinger/ldadmin-create-react-app",
