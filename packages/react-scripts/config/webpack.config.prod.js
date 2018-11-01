@@ -57,6 +57,9 @@ if (env.stringified['process.env'].NODE_ENV !== '"production"') {
   throw new Error('Production builds must have NODE_ENV=production.');
 }
 
+// Check if TypeScript is setup
+const useTypeScript = fs.existsSync(paths.appTsConfig);
+
 // style files regexes
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
@@ -225,7 +228,9 @@ module.exports = {
     // https://github.com/facebook/create-react-app/issues/290
     // `web` extension prefixes have been added for better support
     // for React Native Web.
-    extensions: paths.moduleFileExtensions.map(ext => `.${ext}`),
+    extensions: paths.moduleFileExtensions
+      .map(ext => `.${ext}`)
+      .filter(ext => useTypeScript || !ext.includes('ts')),
     alias: {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
@@ -545,6 +550,22 @@ module.exports = {
         async: false,
         checkSyntacticErrors: true,
         tsconfig: paths.appTsConfig,
+        compilerOptions: {
+          module: 'esnext',
+          moduleResolution: 'node',
+          resolveJsonModule: true,
+          isolatedModules: true,
+          noEmit: true,
+          jsx: 'preserve',
+        },
+        reportFiles: [
+          '**',
+          '!**/*.json',
+          '!**/__tests__/**',
+          '!**/?(*.)(spec|test).*',
+          '!src/setupProxy.js',
+          '!src/setupTests.*',
+        ],
         watch: paths.appSrc,
         silent: true,
         formatter: typescriptFormatter,
